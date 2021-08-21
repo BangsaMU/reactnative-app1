@@ -1,19 +1,22 @@
 import React from 'react'
 import { View, Text } from 'react-native'
-
 import { NavigationContainer } from '@react-navigation/native'
-import {CreateMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs'
+import { createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs'
 
-import Home from '../../page/Home'
 
-const MaterialBottom = CreateMaterialBottomTabNavigator();
+// import Home from '../../page/Home'
+import {Home,Activity} from '../../page'
 
-export default function index() {
+const MaterialBottom = createMaterialBottomTabNavigator();
+
+
+export default function index(props) {
     return (
         <NavigationContainer>
-            <createMaterialBottomTabNavigator>
-                <MaterialBottom.Screen name='Home'></MaterialBottom.Screen>
-            </createMaterialBottomTabNavigator>
+            <MaterialBottom.Navigator>
+                <MaterialBottom.Screen name='Home' component={Home}></MaterialBottom.Screen>
+                <MaterialBottom.Screen name='Activity' component={Activity}></MaterialBottom.Screen>
+            </MaterialBottom.Navigator>
         </NavigationContainer>
     )
 }

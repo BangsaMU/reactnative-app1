@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text, View, Image, Dimensions, StyleSheet, StatusBar, ScrollView } from 'react-native';
 import imgBanner from '../../assets/images/awan.jpg'
+
 /*import component*/
 import WidgetTiga from '../../component/widgetTigaComponent'
 import WidgetFeature from '../../component/widgetFeatureComponent'
