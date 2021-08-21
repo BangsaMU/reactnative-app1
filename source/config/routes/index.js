@@ -2,11 +2,11 @@ import React from 'react'
 import { View, Text } from 'react-native'
 
 import { NavigationContainer } from '@react-navigation/native'
-import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs'
+import {CreateMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs'
 
 import Home from '../../page/Home'
 
-const MaterialBottom = createMaterialBottomTabNavigator();
+const MaterialBottom = CreateMaterialBottomTabNavigator();
 
 export default function index() {
     return (
