@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, Image, StyleSheet, ProgressViewIOSComponent } from 'react-native';
+import { Text, View, Image, StyleSheet, TouchableOpacity } from 'react-native';
  
 const styles = StyleSheet.create({
 
@@ -19,10 +19,10 @@ const styles = StyleSheet.create({
 
 const SubWidget = (props) => {
   return (
-      <View style={{width:'25%', alignItems:'center'}}>
+      <TouchableOpacity onPress={props.onPress} style={{width:'25%', alignItems:'center'}}>
         <Image style={styles.FeatureImage} source={props.image} />
         <Text style={styles.textStyle2}>{props.title}</Text>
-      </View>
+      </TouchableOpacity>
   );
 }
 

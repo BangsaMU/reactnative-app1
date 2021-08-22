@@ -4,4 +4,6 @@ import Inbox from '../page/Inbox'
 import Payment from '../page/Payment'
 import Account from '../page/Account'
 
-export {Home,Activity,Inbox,Payment,Account}
+import Food from '../page/Food'
+
+export {Home,Activity,Inbox,Payment,Account,Food}
