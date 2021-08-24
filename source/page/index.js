@@ -6,4 +6,5 @@ import Account from '../page/Account'
 
 import Food from '../page/Food'
 
-export {Home,Activity,Inbox,Payment,Account,Food}
+export { default as Login } from '../page/Account/login' //lagsung import dan export
+export { Home, Activity, Inbox, Payment, Account, Food } //

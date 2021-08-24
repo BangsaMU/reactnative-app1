@@ -17,25 +17,30 @@ import IconAccount from '../../assets/icon/nav-account.jpg'
 import IconAccountActive from '../../assets/icon/nav-account-active.jpg'
 
 
-import { Home, Activity, Inbox, Payment, Account, Food } from '../../page' //kalo ada banyak pagenya pakek ini
+import { Home, Activity, Inbox, Payment, Account, Food, Login } from '../../page' //kalo ada banyak pagenya pakek ini
 
 const MaterialBottom = createMaterialBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 const HomeStack = () => {
     return (
-        <Stack.Navigator >
+        <Stack.Navigator
+            initialRouteName='Login'
+        >
             <Stack.Screen name="Home" component={ButtonTabs}
                 options={{
                     title: null,
                     // headerShadowVisible: false,
                     // headerTransparent: true,
-                    headerShown:false
+                    headerShown: false
                 }}
             />
             <Stack.Screen name="Food" component={Food} />
-            {/* <Stack.Screen name="Profile" component={Profile} />
-            <Stack.Screen name="Settings" component={Settings} /> */}
+            <Stack.Screen name="Login" component={Login}
+                options={{
+                    title: null,
+                    headerShown: false
+                }} />
         </Stack.Navigator>
     )
 }
