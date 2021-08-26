@@ -25,13 +25,13 @@ const styles = StyleSheet.create({
 
 const listFeature = [
   { id: 1, img: require('../assets/icon/food.jpg'), title: 'Foods', name: 'Food' },
-  { id: 1, img: require('../assets/icon/bike.jpg'), title: 'Bike', name: '' },
-  { id: 1, img: require('../assets/icon/food.jpg'), title: 'Foods', name: '' },
-  { id: 1, img: require('../assets/icon/send.jpg'), title: 'Delive', name: '' },
-  { id: 1, img: require('../assets/icon/food.jpg'), title: 'Foods', name: '' },
-  { id: 1, img: require('../assets/icon/bike.jpg'), title: 'Bike', name: '' },
-  { id: 1, img: require('../assets/icon/food.jpg'), title: 'Foods', name: '' },
-  { id: 1, img: require('../assets/icon/more.jpg'), title: 'More', name: '' },
+  { id: 2, img: require('../assets/icon/bike.jpg'), title: 'Bike', name: null },
+  { id: 3, img: require('../assets/icon/food.jpg'), title: 'Foods', name: null },
+  { id: 4, img: require('../assets/icon/send.jpg'), title: 'Delive', name: null },
+  { id: 5, img: require('../assets/icon/food.jpg'), title: 'Foods', name: null },
+  { id: 6, img: require('../assets/icon/bike.jpg'), title: 'Bike', name: null },
+  { id: 7, img: require('../assets/icon/food.jpg'), title: 'Foods', name: null },
+  { id: 8, img: require('../assets/icon/more.jpg'), title: 'More', name: null },
 ];
 
 const Widget = () => {
@@ -40,13 +40,15 @@ const Widget = () => {
   return (
     <View style={styles.wrapperFeature}>
       {listFeature.map(feature => (
-        <SubFeature image={feature.img} title={feature.title} onPress={() => {
+        <SubFeature key={feature.id.toString()} image={feature.img} title={feature.title} onPress={() => {
           if (feature.name) {
+            console.log('goto', feature.name)
             navigation.navigate({
               name: feature.name,
               params: {},
             })
-          }else{
+          } else {
+            console.log(feature.title, 'error page 404')
             alert('Halaman masih dalam pengembangan')
           }
         }} />
