@@ -21,7 +21,7 @@ const Home = () => {
       <View style={styles.wrapperOvo}>
         <View style={styles.textOvo}>
           <Text style={styles.textStyle1}>Ovo Balance</Text>
-          <Text style={styles.textStyle1}>Rp 9.700.004</Text>
+          <Text style={styles.textStyle1}>Rp 9.700.005</Text>
         </View>
         <View style={styles.garisDiOvo}></View>
         <WidgetTiga />
