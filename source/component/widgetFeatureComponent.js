@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, StyleSheet, Modal } from 'react-native';
 import SubFeature from './widgetFeatureComponentSub'
 import { useNavigation } from '@react-navigation/native'
 
@@ -36,9 +36,19 @@ const listFeature = [
 
 const Widget = () => {
   const navigation = useNavigation();
+  const [modalVisible, setModalVisible] = useState(false)
 
   return (
     <View style={styles.wrapperFeature}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert("Modal has been closed.");
+          setModalVisible(!modalVisible);
+        }}
+      ></Modal>
       {listFeature.map(feature => (
         <SubFeature key={feature.id.toString()} image={feature.img} title={feature.title} onPress={() => {
           if (feature.name) {
@@ -48,8 +58,9 @@ const Widget = () => {
               params: {},
             })
           } else {
+            setModalVisible(true);
             console.log(feature.title, 'error page 404')
-            alert('Halaman masih dalam pengembangan')
+            // alert('Halaman masih dalam pengembangan')
           }
         }} />
       ))}

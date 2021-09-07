@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useEffect, useReducer } from 'react'
 import { View, Text, Image, StyleSheet, ImageBackground, ImageBackgroundComponent } from 'react-native'
 
 import { NavigationContainer } from '@react-navigation/native'
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import MMKVStorage, { useMMKVStorage } from "react-native-mmkv-storage";
 
 import IconHome from '../../assets/icon/nav-home.jpg'
 import IconHomeActive from '../../assets/icon/nav-home-active.jpg'
@@ -17,31 +18,128 @@ import IconAccount from '../../assets/icon/nav-account.jpg'
 import IconAccountActive from '../../assets/icon/nav-account-active.jpg'
 
 
-import { Home, Activity, Inbox, Payment, Account, Food, Login } from '../../page' //kalo ada banyak pagenya pakek ini
+import { AuthContext,state,dispatch } from "../../Contex";
+import { Home, Activity, Inbox, Payment, Account, Food, Login, CekOtp, Auth, Splash as SplashScreen } from '../../page' //kalo ada banyak pagenya pakek ini
 
 const MaterialBottom = createMaterialBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-const HomeStack = () => {
+const MMKV = new MMKVStorage.Loader().initialize();
+// const userToken = false;
+
+const HomeStack = (props) => {
+    console.log('get props HomeStack', props)
+    const [user, setUser] = useMMKVStorage("user", MMKV);
+    const [userToken, setuserToken] = useMMKVStorage("userToken", MMKV);
+    // const state = props.state;
+    const [state, dispatch] = React.useReducer(
+        (prevState, action) => {
+            switch (action.type) {
+                case 'RESTORE_TOKEN':
+                    return {
+                        ...prevState,
+                        userToken: action.token,
+                        isLoading: false,
+                    };
+                case 'SIGN_IN':
+                    return {
+                        ...prevState,
+                        isSignout: false,
+                        userToken: action.token,
+                    };
+                case 'SIGN_OUT':
+                    return {
+                        ...prevState,
+                        isSignout: true,
+                        userToken: null,
+                    };
+            }
+        },
+        {
+            isLoading: true,
+            isSignout: false,
+            userToken: null,
+        }
+    );
+
+    useEffect(() => {
+        // Fetch the token from storage then navigate to our appropriate place
+        // const bootstrapAsync = async () => {
+        //     let userToken;
+
+        //     try {
+        //         userToken = await SecureStore.getItemAsync('userToken');
+        //     } catch (e) {
+        //         // Restoring token failed
+        //     }
+
+        //     // After restoring token, we may need to validate it in production apps
+
+        //     // This will switch to the App screen or Auth screen and this loading
+        //     // screen will be unmounted and thrown away.
+        //     dispatch({ type: 'RESTORE_TOKEN', token: userToken });
+        // };
+
+        // bootstrapAsync();
+        console.log('roters -->')
+        console.log('cek token', userToken)
+        console.log('cek user', user)
+        console.log('cek state', state)
+        dispatch({ type: 'RESTORE_TOKEN', token: userToken });
+    }, []);
+
     return (
         <Stack.Navigator
-            initialRouteName='Login'
+        // initialRouteName='Auth'
         >
-            <Stack.Screen name="Home" component={ButtonTabs}
-                options={{
-                    title: null,
-                    // headerShadowVisible: false,
-                    // headerTransparent: true,
-                    headerShown: false
-                }}
-            />
-            <Stack.Screen name="Food" component={Food} />
-            <Stack.Screen name="Login" component={Login}
-                options={{
-                    title: null,
-                    headerShown: false
-                }} />
+
+            {state.isLoading ? (
+                <Stack.Screen name="Splash" component={SplashScreen}
+                    options={{
+                        title: null,
+                        headerShown: false
+                    }}
+                />
+            ) : state.userToken == null ? (
+                <>
+                    {/* < Stack.Screen name="Auth" component={Auth}
+                        options={{
+                            title: null,
+                            headerShown: false
+                        }}
+                    /> */}
+
+                    <Stack.Screen name="Login" component={Login}
+                        options={{
+                            title: null,
+                            headerShown: false
+                        }}
+                    />
+
+                    <Stack.Screen name="CekOtp" component={CekOtp}
+                        options={{
+                            title: 'Ganti no HP',
+                            headerShown: true
+                        }} />
+
+                </>
+            ) : (
+                <>
+                    <Stack.Screen name="Home" component={ButtonTabs}
+                        options={{
+                            title: null,
+                            // headerShadowVisible: false,
+                            // headerTransparent: true,
+                            headerShown: false
+                        }}
+                    />
+
+                    <Stack.Screen name="Food" component={Food} />
+                </>
+            )}
+
         </Stack.Navigator>
+
     )
 }
 
@@ -149,9 +247,10 @@ const styles = StyleSheet.create({
 })
 
 export default function index(props) {
+    console.log('get props routes', props.state)
     return (
         <NavigationContainer>
-            <HomeStack />
+            <HomeStack state={props.state} />
         </NavigationContainer >
     )
 }
