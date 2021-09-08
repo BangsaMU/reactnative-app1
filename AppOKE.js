@@ -2,12 +2,15 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Text, View, Image, Dimensions, StyleSheet, StatusBar, ScrollView } from 'react-native';
 
 import Routes from './source/config/routes'
+import MMKVStorage, { useMMKVStorage } from "react-native-mmkv-storage";
 
 const { heigh, width } = Dimensions.get('window')
 
-// import { AuthContext, state, dispatch } from "./source/Contex";
-
-import { Splash } from './source/page'
+const MMKV = new MMKVStorage.Loader().initialize();
+let allInstances = MMKV.getAllMMKVInstanceIDs();
+let intializedInstances = MMKV.getCurrentMMKVInstanceIDs();
+console.log('allInstances', allInstances);
+console.log('intializedInstances', intializedInstances);
 
 export const AuthContext = React.createContext();
 
@@ -68,8 +71,8 @@ const Home = (navigation) => {
         // let string = await MMKV.getStringAsync("string");
         // console.log('load string', string);
         let object = await MMKV.getMapAsync("myobject");
-        console.log('load object', object);
-        let userToken = object.userToken
+        console.log('load object AppOKE', object);
+        let userToken = object == null ? null : object.userToken;
         // Restore token stored in `SecureStore` or any other encrypted storage
         // userToken = await SecureStore.getItemAsync('userToken');
 
@@ -78,7 +81,7 @@ const Home = (navigation) => {
         // This will switch to the App screen or Auth screen and this loading
         // screen will be unmounted and thrown away.
 
-        console.log('useEffect userToken:', userToken);
+        console.log('AppOKE useEffect userToken:', userToken);
         dispatch({ type: 'RESTORE_TOKEN', userToken: userToken });
 
       } catch (e) {
@@ -89,7 +92,7 @@ const Home = (navigation) => {
       }
 
 
-      // dispatch({ type: 'RESTORE_TOKEN', token: userToken });
+      // dispatch({ type: 'RESTORE_TOKEN', userToken: userToken });
     };
     // let object = await MMKV.getMapAsync("myobject");
     // console.log('load object', object);
@@ -109,6 +112,10 @@ const Home = (navigation) => {
 
         let token = null;
         let object = await MMKV.getMapAsync("myobject");
+        if (object == null) {
+          object = { username: "samu", password: "1234" };
+        }
+        
         let prevState = object;
         console.log('load object user', object);
         console.log('signIn', data);
@@ -117,11 +124,11 @@ const Home = (navigation) => {
 
           console.log('Login OKE', data);
           let token = Math.round((new Date()).getTime() / 1000);
-          // let myObject = { token: token.toString(), username: "samu", password: "1234" };
+          // let myObject = { userToken: token.toString(), username: "samu", password: "1234" };
 
           let myObject = {
             ...prevState,
-            token: token.toString(),
+            userToken: token.toString(),
           };
 
           console.log('Update ', myObject);
@@ -135,30 +142,33 @@ const Home = (navigation) => {
 
         }
       },
-      signOut: async () => {
+      signOut: async (data) => {
 
-        let myobject = await MMKV.getMapAsync("myobject");
-        let prevState = myobject;
+        let token = null;
+        let object = await MMKV.getMapAsync("myobject");
+        let prevState = object;
+        console.log('load object user', object);
+        // console.log('signOut', data);
+
+        // let myobject = await MMKV.getMapAsync("myobject");
+        // let prevState = myobject;
 
         // WITH CALLBACK
-        // let myObject = { token: null, username: "samu", password: "1234" };
-        let object = {
+        // let myObject = { userToken: null, username: "samu", password: "1234" };
+        let myObject = {
           ...prevState,
-          token: null,
+          userToken: token,
         };
 
+        console.log('Update ', myObject);
+        await MMKV.setMapAsync("myobject", myObject);
 
-        // await MMKV.setMapAsync("myobject", object);
-        MMKV.setMap("myobject", object, (error, result) => {
-          if (error) {
-            console.log('error', error);
-            return;
-          }
 
-          console.log('result', result); // logs true;
-        });
+        let object2 = await MMKV.getMapAsync("myobject");
+        console.log('load object user signOut', object2);
 
         dispatch({ type: 'SIGN_OUT' })
+
       },
       signUp: async (data) => {
         // In a production app, we need to send user data to server and get a token
@@ -170,18 +180,18 @@ const Home = (navigation) => {
         let prevState = myobject;
 
         let mytoken = Math.round((new Date()).getTime() / 1000);
-        // let myObject = { token: token.toString(), username: "samu", password: "1234" };
+        // let myObject = { userToken: token.toString(), username: "samu", password: "1234" };
 
         let object = {
           ...prevState,
-          token: mytoken,
+          userToken: mytoken,
           username: data.username,
           password: data.password
         };
 
         await MMKV.setMapAsync("myobject", object);
 
-        dispatch({ type: 'SIGN_IN', token: mytoken });
+        dispatch({ type: 'SIGN_IN', userToken: mytoken });
       },
     }),
     []
@@ -189,7 +199,7 @@ const Home = (navigation) => {
 
   return (
     <AuthContext.Provider value={authContext}>
-      <Routes />
+      <Routes state={state} dispatch={dispatch} />
     </AuthContext.Provider>
   );
 }

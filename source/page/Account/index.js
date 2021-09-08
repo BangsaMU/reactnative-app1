@@ -2,8 +2,7 @@ import React, { useEffect } from 'react'
 import { Button, View, Text } from 'react-native'
 import MMKVStorage, { useMMKVStorage } from "react-native-mmkv-storage";
 import { useNavigation } from '@react-navigation/native'
-// import { AuthContext } from "../../Contex";
-import { AuthContext } from "../../../App2";
+import { AuthContext } from "../../../AppOKE";
 
 export default function index() {
     const { signOut } = React.useContext(AuthContext);

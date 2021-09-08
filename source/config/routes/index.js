@@ -17,8 +17,7 @@ import IconPaymentActive from '../../assets/icon/nav-payment-active.jpg'
 import IconAccount from '../../assets/icon/nav-account.jpg'
 import IconAccountActive from '../../assets/icon/nav-account-active.jpg'
 
-
-import { AuthContext,state,dispatch } from "../../Contex";
+// import { AuthContext, state, dispatch } from "../../../AppOKE";
 import { Home, Activity, Inbox, Payment, Account, Food, Login, CekOtp, Auth, Splash as SplashScreen } from '../../page' //kalo ada banyak pagenya pakek ini
 
 const MaterialBottom = createMaterialBottomTabNavigator();
@@ -28,64 +27,133 @@ const MMKV = new MMKVStorage.Loader().initialize();
 // const userToken = false;
 
 const HomeStack = (props) => {
-    console.log('get props HomeStack', props)
-    const [user, setUser] = useMMKVStorage("user", MMKV);
-    const [userToken, setuserToken] = useMMKVStorage("userToken", MMKV);
-    // const state = props.state;
+    const state = props.state;
+    const dispatch = () => props.dispatch;
+
+    /*
     const [state, dispatch] = React.useReducer(
         (prevState, action) => {
+
+            const unixTime = Math.floor(Date.now() / 1000);
+            const unixTime2 = Math.round((new Date()).getTime() / 1000);
+            console.log(prevState, '<== state ==>', action)
             switch (action.type) {
                 case 'RESTORE_TOKEN':
-                    return {
-                        ...prevState,
-                        userToken: action.token,
-                        isLoading: false,
+                    {
+                        console.log(unixTime, 'Action ==>', action.type)
+                        return {
+                            ...prevState,
+                            userToken: action.userToken,
+                            isLoading: false,
+                        }
                     };
                 case 'SIGN_IN':
-                    return {
-                        ...prevState,
-                        isSignout: false,
-                        userToken: action.token,
+                    {
+                        console.log(unixTime, 'Action ==>', action.type, unixTime2, action.userToken)
+                        return {
+                            ...prevState,
+                            isSignout: false,
+                            userToken: action.userToken,
+                        }
                     };
                 case 'SIGN_OUT':
-                    return {
-                        ...prevState,
-                        isSignout: true,
-                        userToken: null,
+                    {
+                        console.log(unixTime, 'Action ==>', action.type)
+                        return {
+                            ...prevState,
+                            isSignout: true,
+                            userToken: null,
+                        }
                     };
             }
-        },
+        }
+        ,
         {
             isLoading: true,
             isSignout: false,
             userToken: null,
         }
     );
+    */
+
+    console.log('get props HomeStack state', state)
+    console.log('get props HomeStack dispatch', dispatch)
+    // const [user, setUser] = useMMKVStorage("user", MMKV);
+    // const [userToken, setuserToken] = useMMKVStorage("userToken", MMKV);
+    // const state = props.state;
+    // const [state, dispatch] = React.useReducer(
+    //     (prevState, action) => {
+    //         switch (action.type) {
+    //             case 'RESTORE_TOKEN':
+    //                 return {
+    //                     ...prevState,
+    //                     userToken: action.token,
+    //                     isLoading: false,
+    //                 };
+    //             case 'SIGN_IN':
+    //                 return {
+    //                     ...prevState,
+    //                     isSignout: false,
+    //                     userToken: action.token,
+    //                 };
+    //             case 'SIGN_OUT':
+    //                 return {
+    //                     ...prevState,
+    //                     isSignout: true,
+    //                     userToken: null,
+    //                 };
+    //         }
+    //     },
+    //     {
+    //         isLoading: true,
+    //         isSignout: false,
+    //         userToken: null,
+    //     }
+    // );
 
     useEffect(() => {
         // Fetch the token from storage then navigate to our appropriate place
-        // const bootstrapAsync = async () => {
-        //     let userToken;
-
-        //     try {
-        //         userToken = await SecureStore.getItemAsync('userToken');
-        //     } catch (e) {
-        //         // Restoring token failed
-        //     }
-
-        //     // After restoring token, we may need to validate it in production apps
-
-        //     // This will switch to the App screen or Auth screen and this loading
-        //     // screen will be unmounted and thrown away.
-        //     dispatch({ type: 'RESTORE_TOKEN', token: userToken });
-        // };
-
-        // bootstrapAsync();
         console.log('roters -->')
-        console.log('cek token', userToken)
-        console.log('cek user', user)
-        console.log('cek state', state)
-        dispatch({ type: 'RESTORE_TOKEN', token: userToken });
+
+        const bootstrapAsync = async () => {
+
+            try {
+                // await MMKV.setStringAsync("string", "string1");
+                // let string = await MMKV.getStringAsync("string");
+                // console.log('load string', string);
+                let object = await MMKV.getMapAsync("myobject");
+                console.log('load object ROUTES', object);
+                let userToken = object !=null ? object.userToken : null;
+                // Restore token stored in `SecureStore` or any other encrypted storage
+                // userToken = await SecureStore.getItemAsync('userToken');
+
+                // After restoring token, we may need to validate it in production apps
+
+                // This will switch to the App screen or Auth screen and this loading
+                // screen will be unmounted and thrown away.
+
+                // console.log('cek token', userToken)
+                // console.log('cek user', user)
+                // console.log('cek state', state)
+                // dispatch({ type: 'RESTORE_TOKEN', token: userToken });
+
+                console.log('ROUTES useEffect userToken:', userToken);
+                dispatch({ type: 'RESTORE_TOKEN', userToken: userToken });
+
+            } catch (e) {
+                let userToken = null;
+                console.err('gagal restore token', e)
+                // Restoring token failed
+                dispatch({ type: 'RESTORE_TOKEN', userToken: userToken });
+            }
+
+
+            // dispatch({ type: 'RESTORE_TOKEN', token: userToken });
+        };
+        // let object = await MMKV.getMapAsync("myobject");
+        // console.log('load object', object);
+        // userToken = object.token
+        bootstrapAsync();
     }, []);
 
     return (
@@ -247,10 +315,12 @@ const styles = StyleSheet.create({
 })
 
 export default function index(props) {
-    console.log('get props routes', props.state)
+    console.log('get props routes', props)
     return (
+        // <AuthContext.Provider value={authContext}>
         <NavigationContainer>
-            <HomeStack state={props.state} />
+            <HomeStack state={props.state} dispatch={props.dispatch} />
         </NavigationContainer >
+        // </AuthContext.Provider>
     )
 }

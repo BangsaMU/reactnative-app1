@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, StatusBar, StyleSheet, TextInput } from 'react-native'
 import { TouchableRipple } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native'
@@ -7,14 +7,17 @@ import { debounce } from "lodash";
 
 import { cssCoreApp, cssStyles, statusBar, cssLogin } from '../../style'
 
-import { AuthContext } from "../../Contex";
- 
+import { AuthContext } from "../../../AppOKE";
+
 const MMKV = new MMKVStorage.Loader().initialize();
 export default function cekOtp(props) {
 
- 
-    // const { signIn } = React.useContext(AuthContext);
-    
+
+    let username = 'samu';
+    let password = '1234'
+    const { signIn } = useContext(AuthContext);
+
+
     const OTP = 12345
     const [user, setUser] = useMMKVStorage("user", MMKV);
     const [userToken, setUserToken] = useMMKVStorage("userToken", MMKV);
@@ -103,14 +106,18 @@ export default function cekOtp(props) {
 
 
     function cekOtp(otp) {
+
         if (otp == OTP) {
-            let token = Math.round((new Date()).getTime() / 1000);
-            console.log('token', token)
-            setUserToken(token.toString())
-            console.log("goto home")
+            let username = 'samu';
+            let password = '1234'
+            // let token = Math.round((new Date()).getTime() / 1000);
+            // console.log('token', token)
+            // setUserToken(token.toString())
+            console.log("goto login")
             console.log("otp", otp)
             console.log("props.route.params", props.route.params.methodOTP)
-            navigation.navigate('Home')
+            signIn({ username, password });
+            // navigation.navigate('Home')
         } else {
             // setActionButton('none')
             setotp('')

@@ -5,7 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator as createStackNavigator } from '@react-navigation/native-stack'
 import MMKVStorage, { useMMKVStorage } from "react-native-mmkv-storage";
 
-import { Splash as SplashScreen, Account as HomeScreen, SignInScreen  } from './source/page'
+import { Splash as SplashScreen, Account as HomeScreen, SignInScreen } from './source/page'
 // import { AuthContext } from "./source/Contex";
 
 const MMKV = new MMKVStorage.Loader().initialize();
@@ -186,19 +186,22 @@ function App({ navigation }) {
             },
             signOut: async () => {
 
-                let myobject = await MMKV.getMapAsync("myobject");
-                let prevState = myobject;
+                let object = await MMKV.getMapAsync("myobject");
+                let prevState = object;
+
+                console.log('load object user', object);
+                console.log('signOut', data);
 
                 // WITH CALLBACK
                 // let myObject = { token: null, username: "samu", password: "1234" };
-                let object = {
+                let myObject = {
                     ...prevState,
                     userToken: null,
                 };
 
 
                 // await MMKV.setMapAsync("myobject", object);
-                MMKV.setMap("myobject", object, (error, result) => {
+                MMKV.setMap("myobject", myObject, (error, result) => {
                     if (error) {
                         console.log('error', error);
                         return;
