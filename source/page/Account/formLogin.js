@@ -7,7 +7,7 @@ import { debounce } from "lodash";
 
 import { cssCoreApp, cssStyles, statusBar, cssLogin } from '../../style'
 
-export default function login(props) {
+export default function formLogin(props) {
     const MMKV = new MMKVStorage.Loader().initialize();
     const [user, setUser] = useMMKVStorage("user", MMKV);
 
