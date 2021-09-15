@@ -109,20 +109,20 @@ const Home = (navigation) => {
         // We will also need to handle errors if sign in failed
         // After getting token, we need to persist the token using `SecureStore` or any other encrypted storage
         // In the example, we'll use a dummy token
-
+        // type ['OTP', 'AUTH']
         let token = null;
         let object = await MMKV.getMapAsync("myobject");
         if (object == null) {
           object = { username: "samu", password: "1234" };
         }
-        
+
         let prevState = object;
         console.log('load object user', object);
         console.log('signIn', data);
 
-        if (data.username == object.username && data.password == object.password) {
+        if (data.username == object.username && data.password == object.password && data.type == 'AUTH') {
 
-          console.log('Login OKE', data);
+          console.log('AUTH Login OKE', data);
           let token = Math.round((new Date()).getTime() / 1000);
           // let myObject = { userToken: token.toString(), username: "samu", password: "1234" };
 
@@ -136,7 +136,24 @@ const Home = (navigation) => {
 
           dispatch({ type: 'SIGN_IN', userToken: token });
 
-        } else {
+        }
+        if (data.type == 'OTP') {
+
+          console.log('OTP Login OKE', data);
+          let token = Math.round((new Date()).getTime() / 1000);
+          // let myObject = { userToken: token.toString(), username: "samu", password: "1234" };
+
+          let myObject = {
+            ...prevState,
+            userToken: token.toString(),
+          };
+
+          console.log('Update ', myObject);
+          await MMKV.setMapAsync("myobject", myObject);
+
+          dispatch({ type: 'SIGN_IN', userToken: token });
+        }
+        else {
           console.warn("Auth salah", data)
           dispatch({ type: 'SIGN_IN', userToken: token });
 

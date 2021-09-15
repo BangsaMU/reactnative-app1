@@ -36,6 +36,13 @@ const cssLogin = StyleSheet.create({
         fontSize: 25,
         color: '#333333',
         
+        backgroundColor: '#FFFFFF',
+        borderWidth: .1,
+        borderColor: '#333333',
+        // height: 40,
+        // padding: 10,
+        // borderRadius: 4,
+        
     },
 })
 

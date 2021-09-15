@@ -18,7 +18,7 @@ import IconAccount from '../../assets/icon/nav-account.jpg'
 import IconAccountActive from '../../assets/icon/nav-account-active.jpg'
 
 // import { AuthContext, state, dispatch } from "../../../AppOKE";
-import { Home, Activity, Inbox, Payment, Account, Food, Login, CekOtp, Auth, Splash as SplashScreen } from '../../page' //kalo ada banyak pagenya pakek ini
+import { Home, Activity, Inbox, Payment, Account, Food, Login, CekOtp, Auth, Splash as SplashScreen, FormLogin } from '../../page' //kalo ada banyak pagenya pakek ini
 
 const MaterialBottom = createMaterialBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -177,7 +177,7 @@ const HomeStack = (props) => {
                         }}
                     /> */}
 
-                    <Stack.Screen name="Login" component={Login}
+                    <Stack.Screen name="Login" component={FormLogin}
                         options={{
                             title: null,
                             headerShown: false
