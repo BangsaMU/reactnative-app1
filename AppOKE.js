@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Text, View, Image, Dimensions, StyleSheet, StatusBar, ScrollView } from 'react-native';
+import { Linking, Text, View, Image, Dimensions, StyleSheet, StatusBar, ScrollView } from 'react-native';
+import OneSignal from 'react-native-onesignal'; // Import package from node modules
 
 import Routes from './source/config/routes'
 import MMKVStorage, { useMMKVStorage } from "react-native-mmkv-storage";
@@ -14,7 +15,53 @@ console.log('intializedInstances', intializedInstances);
 
 export const AuthContext = React.createContext();
 
-const Home = (navigation) => {
+console.log('cek render', 1)
+
+//OneSignal Init Code
+OneSignal.setLogLevel(6, 0);
+OneSignal.setAppId("6e9ddca2-799e-4f52-aa85-b5e14114954e");
+//END OneSignal Init Code
+
+//Prompt for push on iOS
+OneSignal.promptForPushNotificationsWithUserResponse(response => {
+  console.log("Prompt response:", response);
+});
+
+
+let externalUserId = '081519518186'; // You will supply the external user id to the OneSignal SDK
+
+// Setting External User Id with Callback Available in SDK Version 3.9.3+
+OneSignal.setExternalUserId(externalUserId, (results) => {
+  // The results will contain push and email success statuses
+  console.log('Results of setting external user id');
+  console.log(results);
+
+  // Push can be expected in almost every situation with a success status, but
+  // as a pre-caution its good to verify it exists
+  if (results.push && results.push.success) {
+    console.log('Results of setting external user id push status:');
+    console.log(results.push.success);
+  }
+
+  // Verify the email is set or check that the results have an email success status
+  if (results.email && results.email.success) {
+    console.log('Results of setting external user id email status:');
+    console.log(results.email.success);
+  }
+
+  // Verify the number is set or check that the results have an sms success status
+  if (results.sms && results.sms.success) {
+    console.log('Results of setting external user id sms status:');
+    console.log(results.sms.success);
+  }
+});
+
+
+
+const Home = (props) => {
+
+  console.log('cek render', 2)
+
   // const [isLoading, setIsLoading] = React.useState(true);
   // const [userToken, setUserToken] = React.useState(null);
 
@@ -62,7 +109,58 @@ const Home = (navigation) => {
     }
   );
 
-  useEffect(() => {
+  useEffect(async () => {
+    const { userId } = await OneSignal.getDeviceState();
+    console.log('Onesignal_player_ids', userId);
+    const notificationObj = {
+      contents: { en: "Message Body" },
+      include_player_ids: [userId]
+    };
+
+    const jsonString = JSON.stringify(notificationObj);
+
+    OneSignal.postNotification(jsonString, (success) => {
+      console.log("Success:", success);
+    }, (error) => {
+      console.log("Error:", error);
+    });
+
+
+    //Method for handling notifications opened
+    OneSignal.setNotificationOpenedHandler(notification => {
+      notificationOpenedHandler(notification)
+      console.log("OneSignal: notification opened:", notification);
+    });
+
+    function notificationOpenedHandler(data) {
+      // const url = "infomediaku://Food";
+      const url = data.notification.launchURL ? data.notification.launchURL : 'infomediaku://Home/Inbox';
+      const supportedURL = "https://google.com";
+      // Linking.openURL(data.notification.launchURL);
+      console.log('notificationOpenedHandler', url)
+      Linking.openURL(url);
+
+    }
+
+    //Method for handling notifications received while app in foreground
+    OneSignal.setNotificationWillShowInForegroundHandler(notificationReceivedEvent => {
+      console.log("OneSignal: notification will show in foreground:", notificationReceivedEvent);
+      let notification = notificationReceivedEvent.getNotification();
+      console.log("notification: ", notification);
+      const data = notification.additionalData
+      console.log("additionalData: ", data);
+      // Complete with null means don't show a notification.
+      notificationReceivedEvent.complete(notification);
+
+      if (notification.priority === 1) {
+        const url = notification.launchURL ? notification.launchURL : 'infomediaku://Home/Landing';
+        console.log('notificationOpenedHandler', url)
+        Linking.openURL(url);
+      }
+
+    });
+
+    console.log('cek render', 3)
     // Fetch the token from storage then navigate to our appropriate place
     const bootstrapAsync = async () => {
 

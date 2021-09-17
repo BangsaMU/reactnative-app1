@@ -123,7 +123,7 @@ const HomeStack = (props) => {
                 // console.log('load string', string);
                 let object = await MMKV.getMapAsync("myobject");
                 console.log('load object ROUTES', object);
-                let userToken = object !=null ? object.userToken : null;
+                let userToken = object != null ? object.userToken : null;
                 // Restore token stored in `SecureStore` or any other encrypted storage
                 // userToken = await SecureStore.getItemAsync('userToken');
 
@@ -314,11 +314,36 @@ const styles = StyleSheet.create({
     }
 })
 
+const linking = {
+    prefixes: [
+        /* your linking prefixes */
+        'infomediaku://'
+    ],
+    config: {
+        /* configuration for matching screens with paths 
+        screens: {
+            Food: 'Food',
+        }, 
+        screens: {
+            Home: {
+                screens: {
+                    Inbox: {
+                        path: 'item/:id',
+                        parse: {
+                            id: Number,
+                        },
+                    },
+                },
+            },
+        }*/
+    },
+};
+
 export default function index(props) {
     console.log('get props routes', props)
     return (
         // <AuthContext.Provider value={authContext}>
-        <NavigationContainer>
+        <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>} >
             <HomeStack state={props.state} dispatch={props.dispatch} />
         </NavigationContainer >
         // </AuthContext.Provider>
