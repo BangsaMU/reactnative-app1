@@ -27,8 +27,15 @@ OneSignal.promptForPushNotificationsWithUserResponse(response => {
   console.log("Prompt response:", response);
 });
 
+// You will supply the external user id to the OneSignal SDK
+let externalUserId = 'member001';
+let emailUserId = 'hatur.cms@gmail.com';
+let phoneUserId = '+6281519518186';
+let sha_token = null;//pull from your server or keep as null
+let externalUserIdAuthHash = "..."; // Identifier auth hash generated from your server
 
-let externalUserId = '081519518186'; // You will supply the external user id to the OneSignal SDK
+OneSignal.setEmail(emailUserId);
+OneSignal.setSMSNumber(phoneUserId);
 
 // Setting External User Id with Callback Available in SDK Version 3.9.3+
 OneSignal.setExternalUserId(externalUserId, (results) => {

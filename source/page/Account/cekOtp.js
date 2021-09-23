@@ -7,18 +7,29 @@ import { useForm, Controller } from "react-hook-form";
 import { cssCoreApp, cssStyles, statusBar, cssLogin } from '../../style'
 
 import { AuthContext } from "../../../AppOKE";
+import axios from 'axios'
+import { getDataUsingAsyncAwaitGetCall, getDataUsingSimpleGetCall } from '../../api/auth/otp'
 
 const MMKV = new MMKVStorage.Loader().initialize();
+
 export default function cekOtp(props) {
 
+    const [OTP, setOtp] = useState(null);
+
     const { signIn } = useContext(AuthContext);
-    const OTP = 12345
 
     const { getValues, setValue, setError, control, handleSubmit, formState: { isValid, errors } } = useForm();
     const onSubmit = data => {
         console.log('data', data)
-        cekOtp(data.OTP)
+        cekOtp(data.IOTP)
     };
+
+    useEffect(async () => {
+        let getOtp = await getDataUsingAsyncAwaitGetCall();
+        console.log('getOtp', getOtp)
+        setOtp(getOtp);
+    }, [])
+
 
     // console.log('isValid', isValid);
     // console.log('errors', errors);
@@ -58,7 +69,7 @@ export default function cekOtp(props) {
                                 maxLength={5}
                             />
                         )}
-                        name="OTP"
+                        name="IOTP"
                     />
 
                 </View>
@@ -66,8 +77,8 @@ export default function cekOtp(props) {
             <View style={{ display: 'flex', alignItems: 'center', margin: 5, padding: 3 }}>
                 <TouchableRipple style={{ alignItems: 'center', margin: 5, padding: 3 }} onPress={handleSubmit(onSubmit)}>
                     <>
-                        {!errors.OTP && <Text style={cssStyles.H2} >Lanjut</Text>}
-                        {errors.OTP && <Text style={cssStyles.H2}>{errors.OTP.message}</Text>}
+                        {!errors.IOTP && <Text style={cssStyles.H2} >Lanjut</Text>}
+                        {errors.IOTP && <Text style={cssStyles.H2}>{errors.IOTP.message}</Text>}
                     </>
                 </TouchableRipple>
             </View>
@@ -77,7 +88,7 @@ export default function cekOtp(props) {
 
 
     function cekOtp(otp) {
-        console.log('cek OTP', otp);
+        console.log('cek OTP ' + OTP + '=' + otp);
 
         if (otp == OTP) {
             console.log("goto login")
